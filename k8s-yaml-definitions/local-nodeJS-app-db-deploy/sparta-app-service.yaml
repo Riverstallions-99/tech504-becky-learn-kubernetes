@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sparta-nodejs-app-svc
+  namespace: default
+spec:
+  ports: # access the service on port 31704
+  - nodePort: 31704 # range is 30000-32768
+    port: 80 # service's own internal port
+    targetPort: 3000 # port app listens on inside the pod - needs to match containerPort in the deployment yml file
+  selector:
+    app: sparta-nodejs-app  # this label connects this service to the deployment
+  type: NodePort  # also use LoadBalancer - for local use cluster IP

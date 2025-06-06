@@ -1,0 +1,28 @@
+# YAML is case sensitive
+apiVersion: apps/v1  # specify api to use for deployment
+kind: Deployment  # kind of service/object you want to create
+metadata:
+  name: db-deployment # name the deployment
+spec:
+  selector:
+    matchLabels:
+      app: db  # look for this label/tag to match with k8 service
+  # create a replica set of this with instances/pods
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: db # this label connects the deployment to the service
+    spec:
+      containers:
+      - name: db-container
+        image: mongodb/mongodb-community-server:7.0.6-ubuntu2204 # the image you created to run nginx in a container
+        ports:
+        - containerPort: 27017 # port to expose in the container - needs to match targetPort in the service yml file
+        volumeMounts:
+        - name: db-storage
+          mountPath: /data/db # path inside the container where the volume will be mounted
+      volumes:
+      - name: db-storage
+        persistentVolumeClaim:
+          claimName: db-pvc # this should match the name of the PVC defined in the PVC yaml file
